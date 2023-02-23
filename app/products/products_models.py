@@ -16,11 +16,14 @@ class Product(Base):
     price = Column(Float)
     category_id: Mapped[int] = mapped_column(ForeignKey("products_category.id"))
     brand_id: Mapped[int] = mapped_column(ForeignKey("brands.id"))
+    stock_id: Mapped[int] = mapped_column(ForeignKey("stock.id"))
     uuid = Column(UUID(as_uuid=True), unique=True,
               nullable=False, default=uuid.uuid4)
     created_at = Column(DateTime(timezone=True),
                         nullable=False, default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    stock: Mapped["Stock"] = relationship(back_populates="product")
 
 
 class Brand(Base):
@@ -53,3 +56,15 @@ class Discount(Base):
                         default=func.now())
     updated_at = Column(DateTime(timezone=True), nullable=False,
                         onupdate=func.now())
+
+
+class Stock(Base):
+    __tablename__ = "stock"
+
+    id = Column(Integer, nullable=False, primary_key=True)
+    qty = Column(Integer, nullable=False)
+    created_at = Column(DateTime(timezone=True), nullable=False,
+                        default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    product: Mapped["Product"] = relationship(back_populates="stock")
