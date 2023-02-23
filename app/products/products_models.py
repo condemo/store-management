@@ -1,7 +1,9 @@
-from sqlalchemy import Boolean, Column, DateTime, Float, Integer, String
+from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
+from typing import List
 
 from ..database import Base
 
@@ -12,6 +14,7 @@ class Product(Base):
     id = Column(Integer, nullable=False, primary_key=True)
     name = Column(String, nullable=False, unique=True)
     price = Column(Float)
+    category_id: Mapped[int] = mapped_column(ForeignKey("products_category.id"))
     uuid = Column(UUID(as_uuid=True), unique=True,
               nullable=False, default=uuid.uuid4)
     created_at = Column(DateTime(timezone=True),
@@ -31,6 +34,8 @@ class ProductCategory(Base):
 
     id = Column(Integer, nullable=False, primary_key=True)
     name = Column(String, nullable=False, unique=True)
+
+    products: Mapped[List[Product]] = relationship()
 
 
 class Discount(Base):
