@@ -15,6 +15,7 @@ class Product(Base):
     name = Column(String, nullable=False, unique=True)
     price = Column(Float)
     category_id: Mapped[int] = mapped_column(ForeignKey("products_category.id"))
+    brand_id: Mapped[int] = mapped_column(ForeignKey("brands.id"))
     uuid = Column(UUID(as_uuid=True), unique=True,
               nullable=False, default=uuid.uuid4)
     created_at = Column(DateTime(timezone=True),
@@ -27,6 +28,8 @@ class Brand(Base):
 
     id = Column(Integer, nullable=False, primary_key=True)
     name = Column(String, nullable=False, unique=True)
+
+    products: Mapped[List[Product]] = relationship()
 
 
 class ProductCategory(Base):
