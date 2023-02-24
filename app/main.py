@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .products import products_router
+from .products.router import products_router
 
 app = FastAPI(
         title="Gestión de Inventario",

@@ -2,24 +2,24 @@ from typing import List
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
-from ..database import get_db
-from . import products_schemas, products_models
+from ...database import get_db
+from .. import products_schemas, products_models
 
 
 router = APIRouter(
-        prefix="/products",
-        tags=["Products"]
+        prefix="/brands",
+        tags=["Brands"]
         )
 
 
-@router.get("/brands", response_model=List[products_schemas.BrandResponse])
+@router.get("/", response_model=List[products_schemas.BrandResponse])
 async def get_all_brands(db: Session = Depends(get_db)):
     brand_list = db.query(products_models.Brand).all()
 
     return brand_list
 
 
-@router.get("/brands/{id}", response_model=products_schemas.BrandResponse)
+@router.get("/{id}", response_model=products_schemas.BrandResponse)
 async def get_one_brand(id: int, db: Session = Depends(get_db)):
     brand = db.query(products_models.Brand).filter(
             products_models.Brand.id == id).first()
@@ -27,7 +27,7 @@ async def get_one_brand(id: int, db: Session = Depends(get_db)):
     return brand
 
 
-@router.post("/brands", status_code=status.HTTP_201_CREATED,
+@router.post("/", status_code=status.HTTP_201_CREATED,
              response_model=products_schemas.BrandResponse)
 async def create_brand(brand: products_schemas.BrandCreate,
                        db: Session = Depends(get_db)):
@@ -39,7 +39,7 @@ async def create_brand(brand: products_schemas.BrandCreate,
     return new_brand
 
 
-@router.put("/brands", response_model=products_schemas.BrandResponse)
+@router.put("/", response_model=products_schemas.BrandResponse)
 async def update_brand(updated_brand: products_schemas.BrandUpdate,
                        db: Session = Depends(get_db)):
     brand_query = db.query(products_models.Brand).filter(
@@ -53,7 +53,7 @@ async def update_brand(updated_brand: products_schemas.BrandUpdate,
     return brand_query.first()
 
 
-@router.delete("/brands/{id}")
+@router.delete("/{id}")
 async def delete_brand(id: int, db: Session = Depends(get_db)):
     brand_query = db.query(products_models.Brand).filter(
             products_models.Brand.id == id
