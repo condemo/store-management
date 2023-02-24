@@ -60,5 +60,6 @@ async def delete_brand(id: int, db: Session = Depends(get_db)):
     brand = brand_query.first()
     # TODO: Error management
     brand_query.delete(synchronize_session=False)
+    db.commit()
 
     return brand_query.first()
