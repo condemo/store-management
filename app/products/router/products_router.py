@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from . import brands_router
+from . import brands_router, category_router
 
 # TODO: Chequear las dependencias de una ruta general
 
@@ -16,3 +16,4 @@ async def root():
 
 
 router.include_router(brands_router.router)
+router.include_router(category_router.router)
