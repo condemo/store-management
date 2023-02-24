@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 
 from ...database import get_db
@@ -23,6 +23,10 @@ async def get_one_brand(id: int, db: Session = Depends(get_db)):
     brand = db.query(products_models.Brand).filter(
             products_models.Brand.id == id).first()
 
+    if not brand:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"The brand with id {id} is not found")
+
     return brand
 
 
@@ -45,20 +49,28 @@ async def update_brand(updated_brand: products_schemas.BrandUpdate,
             products_models.Brand.id == updated_brand.id
             )
     brand = brand_query.first()
-    # TODO: Error management check brands
+
+    if not brand:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"The brand with id {id} is not found")
+
     brand_query.update(updated_brand.dict(), synchronize_session=False)
     db.commit()
 
     return brand_query.first()
 
 
-@router.delete("/{id}")
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_brand(id: int, db: Session = Depends(get_db)):
     brand_query = db.query(products_models.Brand).filter(
             products_models.Brand.id == id
             )
     brand = brand_query.first()
-    # TODO: Error management
+
+    if not brand:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"The brand with id {id} is not found")
+
     brand_query.delete(synchronize_session=False)
     db.commit()
 
