@@ -1,3 +1,5 @@
+from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel
 
 
@@ -37,3 +39,42 @@ class ProductCategoryResponse(ProductCategoryBase):
 
     class Config:
         orm_mode = True
+
+
+class StockBase(BaseModel):
+    qty: int
+
+
+class StockRespone(StockBase):
+    id: int
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        orm_mode = True
+
+
+class ProductBase(BaseModel):
+    name: str
+    price: Optional[float] = None
+
+
+class ProductCreate(ProductBase):
+    category_id: int
+    brand_id: int
+
+
+class ProductResponse(ProductBase):
+    id: int
+    category_id: int
+    brand_id: int
+    stock: StockRespone
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class ProductUpdate(ProductBase):
+    id: int
+    category_id: int
+    brand_id: int
