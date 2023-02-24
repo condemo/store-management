@@ -16,7 +16,7 @@ class Product(Base):
     price = Column(Float)
     category_id: Mapped[int] = mapped_column(ForeignKey("products_category.id"))
     brand_id: Mapped[int] = mapped_column(ForeignKey("brands.id"))
-    stock_id: Mapped[int] = mapped_column(ForeignKey("stock.id"))
+    stock_id: Mapped[int] = mapped_column(ForeignKey("stock.id"), unique=True)
     uuid = Column(UUID(as_uuid=True), unique=True,
               nullable=False, default=uuid.uuid4)
     created_at = Column(DateTime(timezone=True),
