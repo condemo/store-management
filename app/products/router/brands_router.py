@@ -8,7 +8,6 @@ from .. import products_schemas, products_models
 
 router = APIRouter(
         prefix="/brands",
-        tags=["Brands"]
         )
 
 
