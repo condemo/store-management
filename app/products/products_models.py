@@ -14,9 +14,9 @@ class Product(Base):
     id = Column(Integer, nullable=False, primary_key=True)
     name = Column(String, nullable=False, unique=True)
     price = Column(Float)
-    category_id: Mapped[int] = mapped_column(ForeignKey("products_category.id"))
-    brand_id: Mapped[int] = mapped_column(ForeignKey("brands.id"))
-    stock_id: Mapped[int] = mapped_column(ForeignKey("stock.id"), unique=True)
+    category_id: Mapped[int] = mapped_column(ForeignKey("products_category.id", ondelete="CASCADE"))
+    brand_id: Mapped[int] = mapped_column(ForeignKey("brands.id", ondelete="CASCADE"))
+    stock_id: Mapped[int] = mapped_column(ForeignKey("stock.id", ondelete="CASCADE"), unique=True)
     uuid = Column(UUID(as_uuid=True), unique=True,
               nullable=False, default=uuid.uuid4)
     created_at = Column(DateTime(timezone=True),
