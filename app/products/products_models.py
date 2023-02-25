@@ -17,6 +17,8 @@ class Product(Base):
     category_id: Mapped[int] = mapped_column(ForeignKey("products_category.id", ondelete="CASCADE"))
     brand_id: Mapped[int] = mapped_column(ForeignKey("brands.id", ondelete="CASCADE"))
     stock_id: Mapped[int] = mapped_column(ForeignKey("stock.id", ondelete="CASCADE"), unique=True)
+    discount_id: Mapped[int] = mapped_column(ForeignKey("discounts.id", ondelete="CASCADE"),
+            nullable=True)
     uuid = Column(UUID(as_uuid=True), unique=True,
               nullable=False, default=uuid.uuid4)
     created_at = Column(DateTime(timezone=True),
@@ -26,6 +28,7 @@ class Product(Base):
     category: Mapped["ProductCategory"] = relationship(back_populates="products")
     brand: Mapped["Brand"] = relationship(back_populates="products")
     stock: Mapped["Stock"] = relationship(back_populates="product")
+    discount: Mapped["Discount"] = relationship(back_populates="product")
 
 
 class Brand(Base):
@@ -56,8 +59,9 @@ class Discount(Base):
     active = Column(Boolean, nullable=False, default=False)
     created_at = Column(DateTime(timezone=True), nullable=False,
                         default=func.now())
-    updated_at = Column(DateTime(timezone=True), nullable=False,
-                        onupdate=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    product: Mapped["Product"] = relationship(back_populates="discount")
 
 
 class Stock(Base):
