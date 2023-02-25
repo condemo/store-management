@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from ...database import get_db
-from . import brands_router, category_router
+from . import brands_router, category_router, discounts_router
 from .. import products_schemas, products_models
 
 # TODO: Chequear las dependencias de una ruta general
@@ -16,6 +16,7 @@ router = APIRouter(
 
 router.include_router(brands_router.router)
 router.include_router(category_router.router)
+router.include_router(discounts_router.router)
 
 
 @router.get("/", response_model=List[products_schemas.ProductCompleteResponse])
