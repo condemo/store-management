@@ -23,6 +23,8 @@ class Product(Base):
                         nullable=False, default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
+    category: Mapped["ProductCategory"] = relationship(back_populates="products")
+    brand: Mapped["Brand"] = relationship(back_populates="products")
     stock: Mapped["Stock"] = relationship(back_populates="product")
 
 
@@ -32,7 +34,7 @@ class Brand(Base):
     id = Column(Integer, nullable=False, primary_key=True)
     name = Column(String, nullable=False, unique=True)
 
-    products: Mapped[List[Product]] = relationship()
+    products: Mapped[List[Product]] = relationship(back_populates="brand")
 
 
 class ProductCategory(Base):
@@ -41,7 +43,7 @@ class ProductCategory(Base):
     id = Column(Integer, nullable=False, primary_key=True)
     name = Column(String, nullable=False, unique=True)
 
-    products: Mapped[List[Product]] = relationship()
+    products: Mapped[List[Product]] = relationship(back_populates="category")
 
 
 class Discount(Base):
