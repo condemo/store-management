@@ -71,12 +71,33 @@ async def create_product(new_product: products_schemas.ProductCreate,
     return product
 
 
-@router.put("/")
+@router.put("/", response_model=products_schemas.ProductCompleteResponse)
 async def update_product(updated_product: products_schemas.ProductUpdate,
                          db: Session = Depends(get_db)):
-    return
+    product_query = db.query(products_models.Product).filter(
+            products_models.Product.id == updated_product.id)
+    product = product_query.first()
+
+    if not product:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"The product with id {id} is not found")
+
+    product_query.update(updated_product.dict(), synchronize_session=False)
+    db.commit()
+
+    return product_query.first()
 
 
-@router.delete("/{id}")
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_product(id: int, db: Session = Depends(get_db)):
-    return
+    product_query = db.query(products_models.Product).filter(products_models.Product.id == id)
+    product = product_query.first()
+
+    if not product:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"The prodcut with id {id} is not found")
+
+    product_query.delete(synchronize_session=False)
+    db.commit()
+
+    return product_query.first()
