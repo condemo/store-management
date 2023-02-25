@@ -63,12 +63,22 @@ class ProductCreate(ProductBase):
     brand_id: int
 
 
+class ProductCompleteResponse(ProductBase):
+    id: int
+    category: ProductCategoryResponse
+    brand: BrandResponse
+    stock: StockRespone
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
 class ProductResponse(ProductBase):
     id: int
     category_id: int
     brand_id: int
-    stock: StockRespone
-    created_at: datetime
+    updated_at: datetime
 
     class Config:
         orm_mode = True
