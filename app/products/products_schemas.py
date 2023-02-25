@@ -87,4 +87,5 @@ class ProductResponse(ProductBase):
 class ProductUpdate(ProductBase):
     id: int
     category_id: int
+    discount_id: Optional[int] = None
     brand_id: int
