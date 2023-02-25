@@ -89,3 +89,27 @@ class ProductUpdate(ProductBase):
     category_id: int
     discount_id: Optional[int] = None
     brand_id: int
+
+
+class DiscountBase(BaseModel):
+    name: str
+    discount_percent: int
+    active: Optional[bool] = False
+
+
+class DiscountCreate(DiscountBase):
+    desc: Optional[str] = None
+
+
+class DiscountUpdate(BaseModel):
+    id: int
+    active: bool
+
+
+class DiscountResponse(DiscountBase):
+    id: int
+    created_at: datetime
+    update_at: Optional[datetime] = None
+
+    class Config:
+        orm_mode = True
