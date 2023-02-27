@@ -28,6 +28,7 @@ class Product(Base):
     brand = relationship("Brand", back_populates="products")
     stock = relationship("Stock", back_populates="product")
     discount = relationship("Discount", back_populates="product")
+    listed = relationship("ProductListed", back_populates="product")
 
 
 class Brand(Base):
