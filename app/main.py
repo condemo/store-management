@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .products.router import products_router
+from .providers.router import providers_router
 
 app = FastAPI(
         title="Gestión de Inventario",
@@ -33,3 +34,4 @@ app.add_middleware(
 
 
 app.include_router(products_router.router)
+app.include_router(providers_router.router)
