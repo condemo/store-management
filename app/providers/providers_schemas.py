@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Optional
 from pydantic import BaseModel, EmailStr
 
@@ -20,6 +20,32 @@ class ProviderUpdate(ProviderBase):
 
 
 class ProviderResponse(ProviderBase):
+    id: int
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        orm_mode = True
+
+
+# PROVIDER ORDERS
+class ProviderOrderBase(BaseModel):
+    provider_id: int
+    received: Optional[bool] = False
+    paid: Optional[bool] = False
+    provider_ticket_id: Optional[str] = None
+    approx_delivery_date: Optional[date] = None
+
+
+class ProviderOrderCreate(ProviderOrderBase):
+    pass
+
+
+class ProviderOrderUpdate(ProviderOrderBase):
+    id: int
+
+
+class ProviderOrderResponse(ProviderOrderBase):
     id: int
     created_at: datetime
     updated_at: Optional[datetime] = None
