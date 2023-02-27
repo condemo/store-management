@@ -1,9 +1,8 @@
 from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import mapped_column, relationship
 from sqlalchemy.sql import func
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
-from typing import List
 
 from ..database import Base
 
@@ -14,10 +13,10 @@ class Product(Base):
     id = Column(Integer, nullable=False, primary_key=True)
     name = Column(String, nullable=False, unique=True)
     price = Column(Float)
-    category_id: Mapped[int] = mapped_column(ForeignKey("products_category.id", ondelete="CASCADE"))
-    brand_id: Mapped[int] = mapped_column(ForeignKey("brands.id", ondelete="CASCADE"))
-    stock_id: Mapped[int] = mapped_column(ForeignKey("stock.id", ondelete="CASCADE"), unique=True)
-    discount_id: Mapped[int] = mapped_column(ForeignKey("discounts.id", ondelete="CASCADE"),
+    category_id = mapped_column(ForeignKey("products_category.id", ondelete="CASCADE"))
+    brand_id = mapped_column(ForeignKey("brands.id", ondelete="CASCADE"))
+    stock_id = mapped_column(ForeignKey("stock.id", ondelete="CASCADE"), unique=True)
+    discount_id = mapped_column(ForeignKey("discounts.id", ondelete="CASCADE"),
             nullable=True)
     uuid = Column(UUID(as_uuid=True), unique=True,
               nullable=False, default=uuid.uuid4)
@@ -25,10 +24,10 @@ class Product(Base):
                         nullable=False, default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
-    category: Mapped["ProductCategory"] = relationship(back_populates="products")
-    brand: Mapped["Brand"] = relationship(back_populates="products")
-    stock: Mapped["Stock"] = relationship(back_populates="product")
-    discount: Mapped["Discount"] = relationship(back_populates="product")
+    category = relationship("ProductCategory", back_populates="products")
+    brand = relationship("Brand", back_populates="products")
+    stock = relationship("Stock", back_populates="product")
+    discount = relationship("Discount", back_populates="product")
 
 
 class Brand(Base):
@@ -37,7 +36,7 @@ class Brand(Base):
     id = Column(Integer, nullable=False, primary_key=True)
     name = Column(String, nullable=False, unique=True)
 
-    products: Mapped[List[Product]] = relationship(back_populates="brand")
+    products = relationship("Product", back_populates="brand")
 
 
 class ProductCategory(Base):
@@ -46,7 +45,7 @@ class ProductCategory(Base):
     id = Column(Integer, nullable=False, primary_key=True)
     name = Column(String, nullable=False, unique=True)
 
-    products: Mapped[List[Product]] = relationship(back_populates="category")
+    products = relationship("Product", back_populates="category")
 
 
 class Discount(Base):
@@ -61,7 +60,7 @@ class Discount(Base):
                         default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
-    product: Mapped["Product"] = relationship(back_populates="discount")
+    product = relationship("Product", back_populates="discount")
 
 
 class Stock(Base):
@@ -73,4 +72,4 @@ class Stock(Base):
                         default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
-    product: Mapped["Product"] = relationship(back_populates="stock")
+    product = relationship("Product", back_populates="stock")
