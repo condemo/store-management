@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, DateTime, Integer, String, func
 from ..database import Base
 
 
@@ -11,3 +11,5 @@ class Provider(Base):
     contact_name = Column(String)
     phone = Column(String)
     web_url = Column(String)
+    created_at = Column(DateTime(timezone=True), nullable=False, default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
