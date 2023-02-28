@@ -31,7 +31,7 @@ class ProviderOrder(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     provider = relationship("Provider", back_populates="orders")
-    product_listed = relationship("ProductListed", back_populates='order')
+    products_listed = relationship("ProductListed", back_populates='order')
 
 
 class ProductListed(Base):

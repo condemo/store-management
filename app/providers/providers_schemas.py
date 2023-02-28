@@ -30,7 +30,6 @@ class ProviderResponse(ProviderBase):
 
 # PROVIDER ORDERS
 class ProviderOrderBase(BaseModel):
-    provider_id: int
     received: Optional[bool] = False
     paid: Optional[bool] = False
     provider_ticket_id: Optional[str] = None
@@ -38,7 +37,7 @@ class ProviderOrderBase(BaseModel):
 
 
 class ProviderOrderCreate(ProviderOrderBase):
-    pass
+    provider_id: int
 
 
 class ProviderOrderUpdate(ProviderOrderBase):
@@ -47,6 +46,7 @@ class ProviderOrderUpdate(ProviderOrderBase):
 
 class ProviderOrderResponse(ProviderOrderBase):
     id: int
+    provider: ProviderResponse
     created_at: datetime
     updated_at: Optional[datetime] = None
 
