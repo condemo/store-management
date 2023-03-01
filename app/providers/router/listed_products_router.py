@@ -17,9 +17,17 @@ async def get_products_listed(db: Session = Depends(get_db)):
     return list_products
 
 
-@router.get("/{id}", response_model=providers_schemas.ProductListedResponse)
-async def get_one_product_listed(id: int, db: Session = Depends(get_db)):
-    return
+@router.get("/{order_id}/{product_id}", response_model=providers_schemas.ProductListedResponse)
+async def get_one_product_listed(order_id: int, product_id: int, db: Session = Depends(get_db)):
+    product = db.query(providers_models.ProductListed) \
+            .filter(providers_models.ProductListed.order_id == order_id) \
+            .filter(providers_models.ProductListed.product_id == product_id).first()
+
+    if not product:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"The product with id {product_id} is not found in the order with id {order_id}")
+
+    return product
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED,
@@ -52,10 +60,11 @@ async def update_product_listed(updated_product: providers_schemas.ProductListed
     return product_query.first()
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_product_listed(id: int, db: Session = Depends(get_db)):
+@router.delete("/{order_id}/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_product_listed(order_id: int, product_id: int, db: Session = Depends(get_db)):
     product_query = db.query(providers_models.ProductListed) \
-            .filter(providers_models.ProductListed.id == id)
+            .filter(providers_models.ProductListed.order_id == order_id) \
+            .filter(providers_models.ProductListed.product_id == product_id)
     product = product_query.first()
 
     if not product:
