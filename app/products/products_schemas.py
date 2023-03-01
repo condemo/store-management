@@ -78,7 +78,7 @@ class ProductResponse(ProductBase):
     id: int
     category_id: int
     brand_id: int
-    updated_at: datetime
+    updated_at: Optional[datetime] = None
 
     class Config:
         orm_mode = True
