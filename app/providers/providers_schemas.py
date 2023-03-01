@@ -71,7 +71,6 @@ class ProductListedUpdate(ProductListedCreate):
 
 
 class ProductListedResponse(BaseModel):
-    id: int
     order: ProviderOrderResponse
     product: ProductResponse
     qty: int
