@@ -2,6 +2,8 @@ from datetime import date, datetime
 from typing import Optional
 from pydantic import BaseModel, EmailStr
 
+from ..products.products_schemas import ProductResponse
+
 
 class ProviderBase(BaseModel):
     name: str
@@ -49,6 +51,30 @@ class ProviderOrderResponse(ProviderOrderBase):
     provider: ProviderResponse
     created_at: datetime
     updated_at: Optional[datetime] = None
+
+    class Config:
+        orm_mode = True
+
+
+# PRODUCT LISTED
+class ProductListedBase(BaseModel):
+    qty: int
+
+
+class ProductListedCreate(ProductListedBase):
+    order_id: int
+    product_id: int
+
+
+class ProductListedUpdate(ProductListedCreate):
+    pass
+
+
+class ProductListedResponse(BaseModel):
+    id: int
+    order: ProviderOrderResponse
+    product: ProductResponse
+    qty: int
 
     class Config:
         orm_mode = True
