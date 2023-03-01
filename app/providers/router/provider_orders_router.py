@@ -3,11 +3,14 @@ from sqlalchemy.orm import Session
 
 from ...database import get_db
 from .. import providers_models, providers_schemas
+from . import listed_products_router
 
 
 router = APIRouter(
         prefix="/orders",
         )
+
+router.include_router(listed_products_router.router)
 
 
 @router.get("/", response_model=list[providers_schemas.ProviderOrderResponse])
