@@ -37,11 +37,10 @@ class ProviderOrder(Base):
 class ProductListed(Base):
     __tablename__ = "products_listed"
 
-    id = Column(Integer, nullable=False, primary_key=True)
     order_id = mapped_column(ForeignKey("provider_orders.id", ondelete="CASCADE"),
-                             nullable=False)
+                             nullable=False, primary_key=True)
     product_id = mapped_column(ForeignKey("products.id", ondelete="CASCADE"),
-                               nullable=False)
+                               nullable=False, primary_key=True)
     qty = Column(Integer, nullable=False, default=0)
 
     order = relationship("ProviderOrder", back_populates="products_listed")
