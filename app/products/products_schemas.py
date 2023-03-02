@@ -108,6 +108,7 @@ class DiscountUpdate(BaseModel):
 
 class DiscountResponse(DiscountBase):
     id: int
+    desc: Optional[str] = None
     created_at: datetime
     update_at: Optional[datetime] = None
 
