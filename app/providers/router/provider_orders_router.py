@@ -22,11 +22,15 @@ async def get_provider_orders(limit: int = 10, db: Session = Depends(get_db)):
     return order_list
 
 
-@router.get("/{id}", response_model=providers_schemas.ProviderResponse)
+@router.get("/{id}", response_model=providers_schemas.ProviderOrderResponse)
 async def get_one_order(id: int, db: Session = Depends(get_db)):
     order = db.query(providers_models.ProviderOrder) \
+            .join(providers_models.ProductListed,
+                  providers_models.ProductListed.order_id == providers_models.ProviderOrder.id,
+                  isouter=True) \
             .filter(providers_models.ProviderOrder.id == id) \
             .first()
+
     if not order:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"The order with id {id} is not found")

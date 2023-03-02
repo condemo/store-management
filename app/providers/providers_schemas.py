@@ -5,6 +5,28 @@ from pydantic import BaseModel, EmailStr
 from ..products.products_schemas import ProductResponse
 
 
+# PRODUCT LISTED
+class ProductListedBase(BaseModel):
+    qty: int
+
+
+class ProductListedCreate(ProductListedBase):
+    order_id: int
+    product_id: int
+
+
+class ProductListedUpdate(ProductListedCreate):
+    pass
+
+
+class ProductListedResponse(BaseModel):
+    product: ProductResponse
+    qty: int
+
+    class Config:
+        orm_mode = True
+
+
 class ProviderBase(BaseModel):
     name: str
     email: Optional[EmailStr] = None
@@ -49,31 +71,9 @@ class ProviderOrderUpdate(ProviderOrderBase):
 class ProviderOrderResponse(ProviderOrderBase):
     id: int
     provider: ProviderResponse
+    products_listed: Optional[list[ProductListedResponse]] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
-
-    class Config:
-        orm_mode = True
-
-
-# PRODUCT LISTED
-class ProductListedBase(BaseModel):
-    qty: int
-
-
-class ProductListedCreate(ProductListedBase):
-    order_id: int
-    product_id: int
-
-
-class ProductListedUpdate(ProductListedCreate):
-    pass
-
-
-class ProductListedResponse(BaseModel):
-    order: ProviderOrderResponse
-    product: ProductResponse
-    qty: int
 
     class Config:
         orm_mode = True
