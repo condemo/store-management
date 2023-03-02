@@ -29,7 +29,10 @@ async def get_products(db: Session = Depends(get_db)):
         isouter=True).join(
         products_models.Brand,
         products_models.Brand.id == products_models.Product.brand_id,
-        isouter=True).group_by(
+        isouter=True).join(
+                products_models.Discount,
+                products_models.Discount.id == products_models.Product.discount_id,
+                isouter=True).group_by(
         products_models.Product.id).all()
 
     return results
@@ -45,7 +48,10 @@ async def get_one_product(id: int, db: Session = Depends(get_db)):
         isouter=True).join(
         products_models.Brand,
         products_models.Brand.id == products_models.Product.brand_id,
-        isouter=True).group_by(
+        isouter=True).join(
+                products_models.Discount,
+                products_models.Discount.id == products_models.Product.discount_id,
+                isouter=True).group_by(
         products_models.Product.id).first()
 
     if not product:
@@ -101,4 +107,4 @@ async def delete_product(id: int, db: Session = Depends(get_db)):
     product_query.delete(synchronize_session=False)
     db.commit()
 
-    return product_query.first()
+    return

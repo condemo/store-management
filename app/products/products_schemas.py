@@ -53,44 +53,6 @@ class StockRespone(StockBase):
         orm_mode = True
 
 
-class ProductBase(BaseModel):
-    name: str
-    price: Optional[float] = None
-
-
-class ProductCreate(ProductBase):
-    category_id: int
-    brand_id: int
-
-
-class ProductCompleteResponse(ProductBase):
-    id: int
-    category: ProductCategoryResponse
-    brand: BrandResponse
-    stock: StockRespone
-    created_at: datetime
-
-    class Config:
-        orm_mode = True
-
-
-class ProductResponse(ProductBase):
-    id: int
-    category_id: int
-    brand_id: int
-    updated_at: Optional[datetime] = None
-
-    class Config:
-        orm_mode = True
-
-
-class ProductUpdate(ProductBase):
-    id: int
-    category_id: int
-    discount_id: Optional[int] = None
-    brand_id: int
-
-
 class DiscountBase(BaseModel):
     name: str
     discount_percent: int
@@ -114,3 +76,42 @@ class DiscountResponse(DiscountBase):
 
     class Config:
         orm_mode = True
+
+
+class ProductBase(BaseModel):
+    name: str
+    price: Optional[float] = None
+
+
+class ProductCreate(ProductBase):
+    category_id: int
+    brand_id: int
+
+
+class ProductCompleteResponse(ProductBase):
+    id: int
+    category: ProductCategoryResponse
+    brand: BrandResponse
+    stock: StockRespone
+    discount: Optional[DiscountResponse] = None
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class ProductResponse(ProductBase):
+    id: int
+    category_id: int
+    brand_id: int
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        orm_mode = True
+
+
+class ProductUpdate(ProductBase):
+    id: int
+    category_id: int
+    discount_id: Optional[int] = None
+    brand_id: int
