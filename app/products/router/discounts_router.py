@@ -71,3 +71,26 @@ async def delete_discount(id: int, db: Session = Depends(get_db)):
     db.commit()
 
     return discount_query.first()
+
+
+@router.put("/link-product/")
+async def link_discount_to_product(discount_id: int, product_id: int,
+                                   db: Session = Depends(get_db)):
+    product_query = db.query(products_models.Product) \
+            .filter(products_models.Product.id == product_id)
+    product = product_query.first()
+
+    discount = db.query(products_models.Discount) \
+            .filter(products_models.Discount.id == discount_id) \
+            .first()
+
+    if not product:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"The product with id {id} is not found")
+    if not discount:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"The discount with id {id} is not found")
+    product_query.update({"discount_id": discount_id}, synchronize_session=False)
+    db.commit()
+
+    return product_query.first()
