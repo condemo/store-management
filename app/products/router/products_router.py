@@ -1,5 +1,6 @@
-from typing import List
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from ...database import get_db
@@ -19,8 +20,9 @@ router.include_router(category_router.router)
 router.include_router(discounts_router.router)
 
 
-@router.get("/", response_model=List[products_schemas.ProductCompleteResponse])
-async def get_products(db: Session = Depends(get_db)):
+@router.get("/", response_model=list[products_schemas.ProductCompleteResponse])
+async def get_products(limit: int = 10, search: Optional[str] = "",
+                       db: Session = Depends(get_db)):
     results = db.query(products_models.Product).join(
         products_models.Stock, products_models.Stock.id == products_models.Product.stock_id,
         isouter=True).join(
@@ -32,8 +34,9 @@ async def get_products(db: Session = Depends(get_db)):
         isouter=True).join(
                 products_models.Discount,
                 products_models.Discount.id == products_models.Product.discount_id,
-                isouter=True).group_by(
-        products_models.Product.id).all()
+                isouter=True).filter(func.lower(products_models.Product.name) \
+                        .contains(search.lower())).group_by(
+        products_models.Product.id).limit(limit).all()
 
     return results
 

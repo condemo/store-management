@@ -1,6 +1,7 @@
-from typing import List
+from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 
 from ...database import get_db
 from .. import products_models, products_schemas
@@ -12,8 +13,12 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[products_schemas.DiscountResponse])
-async def get_discounts(db: Session = Depends(get_db)):
-    discounts_list = db.query(products_models.Discount).all()
+async def get_discounts(limit: int = 10, search: Optional[str] = "",
+                        db: Session = Depends(get_db)):
+    discounts_list = db.query(products_models.Discount) \
+            .filter(func.lower(products_models.Discount.name).contains(search.lower())) \
+            .limit(limit) \
+            .all()
 
     return discounts_list
 

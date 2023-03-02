@@ -14,8 +14,10 @@ router.include_router(listed_products_router.router)
 
 
 @router.get("/", response_model=list[providers_schemas.ProviderOrderResponse])
-async def get_provider_orders(db: Session = Depends(get_db)):
-    order_list = db.query(providers_models.ProviderOrder).all()
+async def get_provider_orders(limit: int = 10, db: Session = Depends(get_db)):
+    order_list = db.query(providers_models.ProviderOrder) \
+            .limit(limit) \
+            .all()
 
     return order_list
 

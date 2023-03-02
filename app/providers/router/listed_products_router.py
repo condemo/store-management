@@ -10,14 +10,14 @@ router = APIRouter(
         )
 
 
-@router.get("/", response_model=list[providers_schemas.ProductListedResponse])
+@router.get("/all", response_model=list[providers_schemas.ProductListedResponse])
 async def get_products_listed(db: Session = Depends(get_db)):
     list_products = db.query(providers_models.ProductListed).all()
 
     return list_products
 
 
-@router.get("/{order_id}/{product_id}", response_model=providers_schemas.ProductListedResponse)
+@router.get("/", response_model=providers_schemas.ProductListedResponse)
 async def get_one_product_listed(order_id: int, product_id: int, db: Session = Depends(get_db)):
     product = db.query(providers_models.ProductListed) \
             .filter(providers_models.ProductListed.order_id == order_id) \

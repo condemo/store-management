@@ -1,5 +1,8 @@
+from typing import Optional
 from fastapi import APIRouter, Depends, status, HTTPException
+from sqlalchemy import func
 from sqlalchemy.orm import Session
+
 
 from ...database import get_db
 from .. import providers_models, providers_schemas
@@ -15,13 +18,17 @@ router.include_router(provider_orders_router.router)
 
 
 @router.get("/", response_model=list[providers_schemas.ProviderResponse])
-async def get_providers(db: Session = Depends(get_db)):
-    providers_list = db.query(providers_models.Provider).all()
+async def get_providers(limit: int = 10, search: Optional[str] = "",
+                        db: Session = Depends(get_db)):
+    providers_list = db.query(providers_models.Provider) \
+            .filter(func.lower(providers_models.Provider.name).contains(search.lower())) \
+            .limit(limit) \
+            .all()
 
     return providers_list
 
 
-@router.get("/id")
+@router.get("/{id}")
 async def get_one_provider(id: int, db: Session = Depends(get_db)):
     provider = db.query(providers_models.Provider) \
             .filter(providers_models.Provider.id == id).first()

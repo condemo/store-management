@@ -1,5 +1,6 @@
-from typing import List
+from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from ...database import get_db
@@ -12,8 +13,12 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[products_schemas.ProductCategoryResponse])
-async def get_categories(db: Session = Depends(get_db)):
-    category_list = db.query(products_models.ProductCategory).all()
+async def get_categories(limit: int = 10, search: Optional[str] = "",
+                         db: Session = Depends(get_db)):
+    category_list = db.query(products_models.ProductCategory) \
+            .filter(func.lower(products_models.ProductCategory.name).contains(search.lower())) \
+            .limit(limit) \
+            .all()
 
     return category_list
 

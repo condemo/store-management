@@ -1,5 +1,6 @@
-from typing import List
+from typing import List, Optional
 from fastapi import APIRouter, Depends, status, HTTPException
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from ...database import get_db
@@ -12,8 +13,11 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[products_schemas.BrandResponse])
-async def get_all_brands(db: Session = Depends(get_db)):
-    brand_list = db.query(products_models.Brand).all()
+async def get_all_brands(limit: int = 10, search: Optional[str] = "",
+                         db: Session = Depends(get_db)):
+    brand_list = db.query(products_models.Brand) \
+            .filter(func.lower(products_models.Brand.name).contains(search.lower())) \
+            .limit(limit).all()
 
     return brand_list
 
@@ -74,4 +78,4 @@ async def delete_brand(id: int, db: Session = Depends(get_db)):
     brand_query.delete(synchronize_session=False)
     db.commit()
 
-    return brand_query.first()
+    return
