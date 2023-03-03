@@ -1,6 +1,5 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from ...database import get_db
@@ -34,9 +33,8 @@ async def get_products(limit: int = 10, search: Optional[str] = "",
         isouter=True).join(
                 products_models.Discount,
                 products_models.Discount.id == products_models.Product.discount_id,
-                isouter=True).filter(func.lower(products_models.Product.name) \
-                        .contains(search.lower())).group_by(
-        products_models.Product.id).limit(limit).all()
+                isouter=True).filter(products_models.Product.name.ilike(f"%{search}%")) \
+                        .group_by(products_models.Product.id).limit(limit).all()
 
     return results
 

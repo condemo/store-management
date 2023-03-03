@@ -1,6 +1,5 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, status, HTTPException
-from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 
@@ -21,7 +20,7 @@ router.include_router(provider_orders_router.router)
 async def get_providers(limit: int = 10, search: Optional[str] = "",
                         db: Session = Depends(get_db)):
     providers_list = db.query(providers_models.Provider) \
-            .filter(func.lower(providers_models.Provider.name).contains(search.lower())) \
+            .filter(providers_models.Provider.name.ilike(f"%{search}%")) \
             .limit(limit) \
             .all()
 

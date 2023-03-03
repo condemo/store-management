@@ -1,7 +1,6 @@
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from sqlalchemy import func
 
 from ...database import get_db
 from .. import products_models, products_schemas
@@ -16,7 +15,7 @@ router = APIRouter(
 async def get_discounts(limit: int = 10, search: Optional[str] = "",
                         db: Session = Depends(get_db)):
     discounts_list = db.query(products_models.Discount) \
-            .filter(func.lower(products_models.Discount.name).contains(search.lower())) \
+            .filter(products_models.Discount.name.ilike(f"%{search}%")) \
             .limit(limit) \
             .all()
 
