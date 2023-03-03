@@ -31,15 +31,19 @@ async def get_one_product_listed(order_id: int, product_id: int, db: Session = D
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED,
-             response_model=providers_schemas.ProductListedResponse)
-async def create_product_listed(product: providers_schemas.ProductListedCreate,
+             response_model=list[providers_schemas.ProductListedResponse])
+async def create_product_listed(products: list[providers_schemas.ProductListedCreate],
                                 db: Session = Depends(get_db)):
-    product_add = providers_models.ProductListed(**product.dict())
-    db.add(product_add)
-    db.commit()
-    db.refresh(product_add)
+    product_list = []
+    for product in products:
+        product_add = providers_models.ProductListed(**product.dict())
+        db.add(product_add)
+        db.commit()
+        db.refresh(product_add)
 
-    return product_add
+        product_list.append(product_add)
+
+    return product_list
 
 
 @router.put("/")
