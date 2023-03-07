@@ -7,11 +7,11 @@ class Provider(Base):
     __tablename__ = "providers"
 
     id = Column(Integer, nullable=False, primary_key=True)
-    name = Column(String, nullable=False, unique=True)
-    email = Column(String, unique=True)
-    contact_name = Column(String)
-    phone = Column(String)
-    web_url = Column(String)
+    name = Column(String(100), nullable=False, unique=True)
+    email = Column(String(50), unique=True)
+    contact_name = Column(String(30))
+    phone = Column(String(25))
+    web_url = Column(String(100))
     created_at = Column(DateTime(timezone=True), nullable=False, default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
@@ -25,7 +25,7 @@ class ProviderOrder(Base):
     provider_id = mapped_column(ForeignKey("providers.id", ondelete="CASCADE"), nullable=False)
     received = Column(Boolean, nullable=False)
     paid = Column(Boolean, nullable=False)
-    provider_ticket_id = Column(String)
+    provider_ticket_id = Column(String(50))
     approx_delivery_date = Column(Date)
     created_at = Column(DateTime(timezone=True), nullable=False, default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

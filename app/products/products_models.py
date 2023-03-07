@@ -11,7 +11,7 @@ class Product(Base):
     __tablename__ = "products"
 
     id = Column(Integer, nullable=False, primary_key=True)
-    name = Column(String, nullable=False, unique=True)
+    name = Column(String(100), nullable=False, unique=True)
     price = Column(Float)
     category_id = mapped_column(ForeignKey("products_category.id", ondelete="CASCADE"))
     brand_id = mapped_column(ForeignKey("brands.id", ondelete="CASCADE"))
@@ -35,7 +35,7 @@ class Brand(Base):
     __tablename__ = "brands"
 
     id = Column(Integer, nullable=False, primary_key=True)
-    name = Column(String, nullable=False, unique=True)
+    name = Column(String(50), nullable=False, unique=True)
 
     products = relationship("Product", back_populates="brand")
 
@@ -44,7 +44,7 @@ class ProductCategory(Base):
     __tablename__ = "products_category"
 
     id = Column(Integer, nullable=False, primary_key=True)
-    name = Column(String, nullable=False, unique=True)
+    name = Column(String(50), nullable=False, unique=True)
 
     products = relationship("Product", back_populates="category")
 
@@ -53,8 +53,8 @@ class Discount(Base):
     __tablename__ = "discounts"
 
     id = Column(Integer, nullable=False, primary_key=True)
-    name = Column(String, nullable=False, unique=True)
-    desc = Column(String, nullable=True)
+    name = Column(String(100), nullable=False, unique=True)
+    desc = Column(String(1000), nullable=True)
     discount_percent = Column(Integer, nullable=False, default=0)
     active = Column(Boolean, nullable=False, default=False)
     created_at = Column(DateTime(timezone=True), nullable=False,
