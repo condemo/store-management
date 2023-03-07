@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel
+import uuid
 
 
 class BrandBase(BaseModel):
@@ -93,6 +94,7 @@ class ProductCompleteResponse(ProductBase):
     category: ProductCategoryResponse
     brand: BrandResponse
     stock: StockRespone
+    uuid: uuid.UUID
     discount: Optional[DiscountResponse] = None
     created_at: datetime
 
