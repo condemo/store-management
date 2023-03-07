@@ -100,6 +100,10 @@ class ProductCompleteResponse(ProductBase):
         orm_mode = True
 
 
+class ProductMinResponse(ProductBase):
+    id: int
+
+
 class ProductResponse(ProductBase):
     id: int
     category_id: int
