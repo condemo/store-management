@@ -56,15 +56,15 @@ class ProviderResponse(ProviderBase):
 class ProviderOrderBase(BaseModel):
     received: Optional[bool] = False
     paid: Optional[bool] = False
-    provider_ticket_id: Optional[str] = None
-    approx_delivery_date: Optional[date] = None
 
 
 class ProviderOrderCreate(ProviderOrderBase):
     provider_id: int
+    provider_ticket_id: Optional[str] = None
+    approx_delivery_date: Optional[date] = None
 
 
-class ProviderOrderUpdate(ProviderOrderBase):
+class ProviderOrderUpdate(ProviderOrderCreate):
     id: int
 
 
@@ -72,6 +72,7 @@ class ProviderOrderResponse(ProviderOrderBase):
     id: int
     provider: ProviderResponse
     products_listed: Optional[list[ProductListedResponse]] = None
+    approx_delivery_date: Optional[date] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
 
