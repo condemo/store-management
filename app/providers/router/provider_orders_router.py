@@ -52,7 +52,7 @@ async def create_provider_order(provider_order: providers_schemas.ProviderOrderC
 
 
 @router.put("/", response_model=providers_schemas.ProviderOrderResponse)
-async def update_provider_order(updated_order: providers_schemas.ProviderOrderUpdate,
+async def update_provider_order_data(updated_order: providers_schemas.ProviderOrderUpdate,
                                 db: Session = Depends(get_db)):
     order_query = db.query(providers_models.ProviderOrder) \
             .filter(providers_models.ProviderOrder.id == updated_order.id)
@@ -63,6 +63,39 @@ async def update_provider_order(updated_order: providers_schemas.ProviderOrderUp
                             detail=f"The order with id {id} is not found")
 
     order_query.update(updated_order.dict(), synchronize_session=False)
+    db.commit()
+
+    return order_query.first()
+
+
+@router.put("/paid-status", response_model=providers_schemas.ProviderOrderResponse)
+async def update_order_paid_status(id: int, paid: bool, db: Session = Depends(get_db)):
+    order_query = db.query(providers_models.ProviderOrder) \
+            .filter(providers_models.ProviderOrder.id == id)
+    order = order_query.first()
+
+    if not order:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"The order with id {id} can not be modified because is not found")
+
+    order_query.update({"paid": paid}, synchronize_session=False)
+    db.commit()
+
+    return order_query.first()
+
+
+@router.put("/received-status", response_model=providers_schemas.ProviderOrderResponse)
+async def update_order_received_status(id: int, received: bool,
+                                 db: Session = Depends(get_db)):
+    order_query = db.query(providers_models.ProviderOrder) \
+            .filter(providers_models.ProviderOrder.id == id)
+    order = order_query.first()
+
+    if not order:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"The order with id {id} can not be modified because is not found")
+
+    order_query.update({"received": received}, synchronize_session=False)
     db.commit()
 
     return order_query.first()
