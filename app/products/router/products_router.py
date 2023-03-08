@@ -65,8 +65,8 @@ async def get_one_product(id: int, db: Session = Depends(get_db)):
 @router.post("/", status_code=status.HTTP_201_CREATED,
              response_model=products_schemas.ProductCompleteResponse)
 async def create_product(new_product: products_schemas.ProductCreate,
-                         db: Session = Depends(get_db)):
-    new_stock = products_models.Stock(qty=0)
+                         qty: Optional[int] = 0, db: Session = Depends(get_db)):
+    new_stock = products_models.Stock(qty=qty)
     db.add(new_stock)
     db.commit()
     db.refresh(new_stock)
