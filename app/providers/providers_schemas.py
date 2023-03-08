@@ -2,7 +2,7 @@ from datetime import date, datetime
 from typing import Optional
 from pydantic import BaseModel, EmailStr
 
-from ..products.products_schemas import ProductResponse
+from ..products.products_schemas import ProductMinResponse
 
 
 # PRODUCT LISTED
@@ -20,7 +20,7 @@ class ProductListedUpdate(ProductListedCreate):
 
 
 class ProductListedResponse(BaseModel):
-    product: ProductResponse
+    product: ProductMinResponse
     qty: int
 
     class Config:
