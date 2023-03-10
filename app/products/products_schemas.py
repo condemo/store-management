@@ -92,6 +92,7 @@ class ProductCreate(ProductBase):
 class ProductCompleteResponse(ProductBase):
     id: int
     category: ProductCategoryResponse
+    provider_price: Optional[float] = None
     brand: BrandResponse
     stock: StockRespone
     uuid: uuid.UUID
@@ -104,6 +105,7 @@ class ProductCompleteResponse(ProductBase):
 
 class ProductMinResponse(ProductBase):
     id: int
+    provider_price: Optional[float] = None
 
     class Config:
         orm_mode = True
@@ -113,6 +115,7 @@ class ProductResponse(ProductBase):
     id: int
     category_id: int
     brand_id: int
+    provider_price: Optional[float] = None
     updated_at: Optional[datetime] = None
 
     class Config:
