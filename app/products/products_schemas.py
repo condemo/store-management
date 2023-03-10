@@ -115,6 +115,7 @@ class ProductResponse(ProductBase):
     id: int
     category_id: int
     brand_id: int
+    stock_id: int
     provider_price: Optional[float] = None
     updated_at: Optional[datetime] = None
 

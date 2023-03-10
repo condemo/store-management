@@ -79,7 +79,7 @@ async def create_product(new_product: products_schemas.ProductCreate,
     return product
 
 
-@router.put("/update-price", response_model=products_schemas.ProductCompleteResponse)
+@router.put("/price-update", response_model=products_schemas.ProductCompleteResponse)
 async def update_product_price(id: int, price: float,
                                db: Session = Depends(get_db)):
     product_query = db.query(products_models.Product) \
@@ -93,6 +93,21 @@ async def update_product_price(id: int, price: float,
     db.commit()
 
     return product_query.first()
+
+
+@router.put("/stock-update")
+async def update_product_stock(id: int, qty: int, db: Session = Depends(get_db)):
+    stock_query = db.query(products_models.Stock) \
+            .filter(products_models.Stock.id == id)
+    stock = stock_query.first()
+
+    if not stock:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Stock record with id {id} is not found")
+    stock_query.update({"qty": stock.qty + qty}, synchronize_session=False)
+    db.commit()
+
+    return stock_query.first()
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
