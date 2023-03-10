@@ -57,11 +57,11 @@ class StockRespone(StockBase):
 class DiscountBase(BaseModel):
     name: str
     discount_percent: int
-    active: Optional[bool] = False
 
 
 class DiscountCreate(DiscountBase):
     desc: Optional[str] = None
+    active: Optional[bool] = False
 
 
 class DiscountUpdate(BaseModel):
@@ -81,7 +81,7 @@ class DiscountResponse(DiscountBase):
 
 class ProductBase(BaseModel):
     name: str
-    price: Optional[float] = None
+    price: float
 
 
 class ProductCreate(ProductBase):
@@ -117,10 +117,3 @@ class ProductResponse(ProductBase):
 
     class Config:
         orm_mode = True
-
-
-class ProductUpdate(ProductBase):
-    id: int
-    category_id: int
-    discount_id: Optional[int] = None
-    brand_id: int
