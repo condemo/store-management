@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from ...database import get_db
 from .. import providers_models, providers_schemas
+from ...products import products_models
 from . import listed_products_router
 
 
@@ -68,7 +69,7 @@ async def update_provider_order_data(updated_order: providers_schemas.ProviderOr
     return order_query.first()
 
 
-@router.put("/paid-status", response_model=providers_schemas.ProviderOrderResponse)
+@router.put("/paid-confirm", response_model=providers_schemas.ProviderOrderResponse)
 async def update_order_paid_status(id: int, paid: bool, db: Session = Depends(get_db)):
     order_query = db.query(providers_models.ProviderOrder) \
             .filter(providers_models.ProviderOrder.id == id)
@@ -77,6 +78,9 @@ async def update_order_paid_status(id: int, paid: bool, db: Session = Depends(ge
     if not order:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"The order with id {id} can not be modified because is not found")
+    if not paid:
+        raise HTTPException(status_code=status.HTTP_451_UNAVAILABLE_FOR_LEGAL_REASONS,
+                            detail="You can only confirm paid")
 
     order_query.update({"paid": paid}, synchronize_session=False)
     db.commit()
@@ -84,21 +88,41 @@ async def update_order_paid_status(id: int, paid: bool, db: Session = Depends(ge
     return order_query.first()
 
 
-@router.put("/received-status", response_model=providers_schemas.ProviderOrderResponse)
+@router.put("/received-confirm", response_model=providers_schemas.ProviderOrderResponse)
 async def update_order_received_status(id: int, received: bool,
                                  db: Session = Depends(get_db)):
+
+    if not received:
+        raise HTTPException(status_code=status.HTTP_451_UNAVAILABLE_FOR_LEGAL_REASONS,
+                            detail="You can only confirm receipt")
+
     order_query = db.query(providers_models.ProviderOrder) \
-            .filter(providers_models.ProviderOrder.id == id)
+        .filter(providers_models.ProviderOrder.id == id)
     order = order_query.first()
 
     if not order:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"The order with id {id} can not be modified because is not found")
+    if order.received:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail=f"The receipt of the order {id} has already been confirmed")
+
+    for product in order.products_listed:
+        listed = db.query(products_models.Product) \
+                .filter(products_models.Product.id == product.product_id) \
+                .first()
+        stock_query = db.query(products_models.Stock) \
+                .filter(products_models.Stock.id == listed.stock_id)
+        stock = stock_query.first()
+        stock_query.update({"qty": stock.qty + product.qty}, synchronize_session=False)
+        db.commit()
 
     order_query.update({"received": received}, synchronize_session=False)
     db.commit()
 
-    return order_query.first()
+    order = order_query.first()
+
+    return order
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
