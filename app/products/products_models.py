@@ -13,6 +13,7 @@ class Product(Base):
     id = Column(Integer, nullable=False, primary_key=True)
     name = Column(String(100), nullable=False, unique=True)
     price = Column(Float)
+    provider_price = Column(Float)
     category_id = mapped_column(ForeignKey("products_category.id", ondelete="CASCADE"))
     brand_id = mapped_column(ForeignKey("brands.id", ondelete="CASCADE"))
     stock_id = mapped_column(ForeignKey("stock.id", ondelete="CASCADE"), unique=True)
