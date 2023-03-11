@@ -74,6 +74,7 @@ class DiscountResponse(DiscountBase):
     desc: Optional[str] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
+    active: bool
 
     class Config:
         orm_mode = True
@@ -87,6 +88,7 @@ class ProductBase(BaseModel):
 class ProductCreate(ProductBase):
     category_id: int
     brand_id: int
+    provider_price: Optional[float] = None
 
 
 class ProductCompleteResponse(ProductBase):
