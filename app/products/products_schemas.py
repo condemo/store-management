@@ -88,7 +88,7 @@ class ProductBase(BaseModel):
 class ProductCreate(ProductBase):
     category_id: int
     brand_id: int
-    provider_price: Optional[float] = None
+    provider_price: float
 
 
 class ProductCompleteResponse(ProductBase):
