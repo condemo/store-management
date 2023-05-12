@@ -107,6 +107,7 @@ class ProductCompleteResponse(ProductBase):
 
 class ProductMinResponse(ProductBase):
     id: int
+    brand: BrandResponse
     provider_price: Optional[float] = None
 
     class Config:

@@ -39,6 +39,18 @@ async def get_products(limit: int = 10, search: Optional[str] = "",
     return results
 
 
+@router.get("/minlist", response_model=list[products_schemas.ProductMinResponse])
+async def get_min_products(limit: int = 10, search: Optional[str] = "",
+                           db: Session = Depends(get_db)):
+    results = db.query(products_models.Product).join(
+        products_models.Brand, products_models.Brand.id == products_models.Product.brand_id,
+        isouter=True
+    ).filter(products_models.Product.name.ilike(f"%{search}%")) \
+        .group_by(products_models.Product.id).limit(limit).all()
+
+    return results
+
+
 @router.get("/{id}", response_model=products_schemas.ProductCompleteResponse)
 async def get_one_product(id: int, db: Session = Depends(get_db)):
     product = db.query(products_models.Product).join(
