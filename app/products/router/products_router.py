@@ -53,7 +53,9 @@ async def get_min_products(limit: int = 10, search: Optional[str] = "",
 
 @router.get("/{id}", response_model=products_schemas.ProductCompleteResponse)
 async def get_one_product(id: int, db: Session = Depends(get_db)):
-    product = db.query(products_models.Product).join(
+    product = db.query(products_models.Product) \
+        .filter(products_models.Product.id == id) \
+        .join(
         products_models.Stock, products_models.Stock.id == products_models.Product.stock_id,
         isouter=True).join(
         products_models.ProductCategory,
